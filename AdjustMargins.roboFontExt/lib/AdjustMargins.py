@@ -30,7 +30,7 @@ class AdjustMargins(BaseWindowController):
     
     # setup our interface
     def __init__(self): 
-        windowWidth = 220
+        windowWidth = 200
         windowHeight = 270
         
         # amount area
