@@ -43,9 +43,9 @@ class AdjustMargins(BaseWindowController):
         
         # glyphs scope area
         self.w.iconAllGlyphs = vanilla.ImageView((15,65,12,13))
-        self.w.iconAllGlyphs.setImage(imagePath="allGlyphs.png")
+        self.w.iconAllGlyphs.setImage(imagePath="../resources/allGlyphs.png")
         self.w.iconSelGlyphs = vanilla.ImageView((15,91,12,13))
-        self.w.iconSelGlyphs.setImage(imagePath="selectedGlyphs.png")
+        self.w.iconSelGlyphs.setImage(imagePath="../resources/selectedGlyphs.png")
         self.w.glyphsRadioGroup = vanilla.RadioGroup((32,60,-15,50),["All Glyphs","Selected Glyphs"],sizeStyle="small")
         self.w.glyphsRadioGroup.set(1) # default to just selected glyphs
         
@@ -54,11 +54,11 @@ class AdjustMargins(BaseWindowController):
         
         # margins area
         self.w.iconBothMargins = vanilla.ImageView((15,137,12,12))
-        self.w.iconBothMargins.setImage(imagePath="bothMargins.png")
+        self.w.iconBothMargins.setImage(imagePath="../resources/bothMargins.png")
         self.w.iconLeftMargin = vanilla.ImageView((15,161,12,12))
-        self.w.iconLeftMargin.setImage(imagePath="leftMargin.png")
+        self.w.iconLeftMargin.setImage(imagePath="../resources/leftMargin.png")
         self.w.iconRightMargin = vanilla.ImageView((15,185,12,12))
-        self.w.iconRightMargin.setImage(imagePath="rightMargin.png")
+        self.w.iconRightMargin.setImage(imagePath="../resources/rightMargin.png")
         self.w.marginSelectionGroup = vanilla.RadioGroup((32,133,-15,70),["Both Margins","Left Margin Only","Right Margin Only"],sizeStyle="small")
         self.w.marginSelectionGroup.set(0) # default both margins
         
