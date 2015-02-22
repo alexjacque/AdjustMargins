@@ -84,6 +84,10 @@ class AdjustMargins(BaseWindowController):
                 self.showMessage("How Much?","Please enter an adjustment amount.") # show error, can't work with nothing...
             else:
                 
+                #
+                #    Get scope
+                #
+                
                 # which glyphs we're working with
                 if self.w.glyphsRadioGroup.get() == 0:
                     glyphs = font.keys() # all
@@ -94,36 +98,61 @@ class AdjustMargins(BaseWindowController):
                         self.showMessage("Adjust What?", "Please select at least one glyph to preform the adjustments on.")
                         return # bail
                     
+                #
+                #    Do adjustments
+                #
                 
-                # if the user want to use an existing margin
+                # if the user wants to set a margin exactly 
                 if adjustmentAmount[:1] == "=":
-                    characterName = adjustmentAmount[1:] # everything after the =
+                    
+                    if (adjustmentAmount[1:].isdigit()): # if after the "=" a number is supplied
+                        # set to a specific number
+                        adjustmentAmount = int(adjustmentAmount[1:]) # make sure we're dealing with integers
+                        
+                        for glyphName in glyphs:
+                            glyph = font[glyphName]
+                            glyph.prepareUndo("Metric Adjustment")
+                            if self.w.marginSelectionGroup.get() == 0: # adjust both margins
+                                glyph.leftMargin = adjustmentAmount
+                                glyph.rightMargin = adjustmentAmount
+                                print("Adjusted left and right margins to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+                            elif self.w.marginSelectionGroup.get() == 1:
+                                glyph.leftMargin = adjustmentAmount
+                                print("Adjusted left margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+                            elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
+                                glyph.rightMargin = adjustmentAmount
+                                print("Adjusted right margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+                            glyph.performUndo()
+                    
+                    else: # if after the "=" a character is supplied
+                        # use an exisiting glyphs measurements
+                        characterName = adjustmentAmount[1:] # everything after the =
+                        
+                        # see if the glyph even exists at all
+                        if characterName in font:
+                            character = font[characterName]
+                            adjustmentLeft = int(character.leftMargin) # integers only please
+                            adjustmentRight = int(character.rightMargin) # integers only please
+                        else:
+                            self.showMessage("Glyph Not Found.","Glyph \"" + characterName + "\" does not exist in this font.");
                 
-                    # see if the glyph even exists at all
-                    if characterName in font:
-                        character = font[characterName]
-                        adjustmentLeft = int(character.leftMargin) # integers only please
-                        adjustmentRight = int(character.rightMargin) # integers only please
-                    else:
-                        self.showMessage("Glyph Not Found.","Glyph \"" + characterName + "\" does not exist in this font.");
                 
-                
-                    # preform adjustments using the supplied character's metrics
-                    for glyphName in glyphs:
-                        glyph = font[glyphName]
-                        glyph.prepareUndo("Metric Adjustment")
-                        if self.w.marginSelectionGroup.get() == 0: # adjust both margins
-                            glyph.leftMargin = adjustmentLeft
-                            glyph.rightMargin = adjustmentRight
-                            print("Adjusted left margin to " + str(adjustmentLeft) + " for glyph: " + glyphName)
-                            print("Adjusted right margin to " + str(adjustmentRight) + " for glyph: " + glyphName)
-                        elif self.w.marginSelectionGroup.get() == 1: # adjust left margin only
-                            glyph.leftMargin = adjustmentLeft
-                            print("Adjusted left margin to " + str(adjustmentLeft) + " for glyph: " + glyphName)
-                        elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
-                            glyph.rightMargin = adjustmentRight
-                            print("Adjusted right margin to " + str(adjustmentRight) + " for glyph: " + glyphName)
-                        glyph.performUndo()
+                        # preform adjustments using the supplied character's metrics
+                        for glyphName in glyphs:
+                            glyph = font[glyphName]
+                            glyph.prepareUndo("Metric Adjustment")
+                            if self.w.marginSelectionGroup.get() == 0: # adjust both margins
+                                glyph.leftMargin = adjustmentLeft
+                                glyph.rightMargin = adjustmentRight
+                                print("Adjusted left margin to " + str(adjustmentLeft) + " for glyph: " + glyphName)
+                                print("Adjusted right margin to " + str(adjustmentRight) + " for glyph: " + glyphName)
+                            elif self.w.marginSelectionGroup.get() == 1: # adjust left margin only
+                                glyph.leftMargin = adjustmentLeft
+                                print("Adjusted left margin to " + str(adjustmentLeft) + " for glyph: " + glyphName)
+                            elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
+                                glyph.rightMargin = adjustmentRight
+                                print("Adjusted right margin to " + str(adjustmentRight) + " for glyph: " + glyphName)
+                            glyph.performUndo()
                         
                 
                 else: # for all other adjustments (+ or -)
