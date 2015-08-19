@@ -29,5 +29,10 @@
 	<real>1440013738.1011729</real>
 	<key>version</key>
 	<string>1.0.2</string>
+	<key>com.robofontmechanic.Mechanic</key>
+	<dict>
+	  <key>repository</key>
+	  <string>alexjacque/AdjustMargins</string>
+	</dict>
 </dict>
 </plist>
