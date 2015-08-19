@@ -9,7 +9,7 @@ AdjustMargins batch adjusts the left and right margins on your glyphs.
 
 
 ### Amount:
-The amount you with to add/subtract from the margins on your selected glyph(s) (e.g. 100, -20, 42, -5). You can also use the = operand followed by a non-negative number to set the margin(s) explicitly to that measurement, or you can enter a glyph name to have the margins of your selected glyphs(s) to be changed to that glyphs margin measurements (e.g. =A, =Oacute, =uni20B9).
+The amount you with to add/subtract from the margins on your selected glyph(s) (e.g. 100, -20, 42, -5). You can also use the = operand followed by a number to set the margin(s) explicitly to that measurement, or you can enter a glyph name to have the margins of your selected glyphs(s) to be changed to that glyphs margin measurements (e.g. =15, =-50, =A, =Oacute, =uni20B9).
 
 ### Glyph Range:
 Change all of the glyphs in your file, or just a selected subset.
