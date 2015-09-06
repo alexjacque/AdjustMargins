@@ -69,6 +69,52 @@ class AdjustMargins(BaseWindowController):
 		self.w.commitButton = vanilla.Button((15, 232, -15, 20), "Commit Adjustments", sizeStyle="small", callback=self.commitButtonCallback)
 		
 		self.w.open() # go go gadget window
+		
+	
+	#	--------------------------
+	#	Preform Adjustments
+	#	- - -
+	#	adjustmentAmount = amount to adjust (an integer)
+	#	glyphs = set of glyphs to adjust
+	#	mode = "set" (explicitly, ie "=") or "add" (assume add by default)
+	#	--------------------------
+	def adjustMargin(self,font,glyphs,adjustmentAmount,mode="add"):
+		
+		if mode == "set": # = sign supplied, setting one value equal to another
+			
+			for glyphName in glyphs: #iterate for all glyphs in set
+				glyph = font[glyphName]
+				glyph.prepareUndo("Metric Adjustment")
+				if self.w.marginSelectionGroup.get() == 0: # adjust both margins
+					glyph.leftMargin = adjustmentAmount
+					glyph.rightMargin = adjustmentAmount
+					print("Adjusted left and right margins to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				elif self.w.marginSelectionGroup.get() == 1:
+					glyph.leftMargin = adjustmentAmount
+					print("Adjusted left margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
+					glyph.rightMargin = adjustmentAmount
+					print("Adjusted right margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				glyph.performUndo()
+			
+		elif mode =="add": # adding some value (positive or negative) to current value
+			
+			for glyphName in glyphs: # iterate for all glyphs in set
+				glyph = font[glyphName]
+				glyph.prepareUndo("Metric Adjustment")
+				if self.w.marginSelectionGroup.get() == 0: # adjust both margins
+					glyph.leftMargin = glyph.leftMargin + adjustmentAmount
+					glyph.rightMargin = glyph.rightMargin + adjustmentAmount
+					print("Adjusted left and right margins " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				elif self.w.marginSelectionGroup.get() == 1:
+					glyph.leftMargin = glyph.leftMargin + int(adjustmentAmount)
+					print("Adjusted left margin " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
+					glyph.rightMargin = glyph.rightMargin + adjustmentAmount
+					print("Adjusted right margin " + str(adjustmentAmount) + " for glyph: " + glyphName)
+				glyph.performUndo()
+			
+		return
 	
 	
 	def commitButtonCallback(self, sender):
@@ -77,7 +123,6 @@ class AdjustMargins(BaseWindowController):
 		# Code is getting pretty spaghettified, need to make this stuff into functions to get 
 		# away from all the if else's, but, at least things work okay for the time being.
 		#
-		
 		
 		if CurrentFont() is None:  
 			self.showMessage("Nothing Open","Please open a file first.") # show error, can't work with nothing...
@@ -114,22 +159,9 @@ class AdjustMargins(BaseWindowController):
 					if adjustmentAmount[1:2] == "-": # if a negative sign proceeds the "="
 						if adjustmentAmount[2:3].isdigit():
 							# set to a specific number
-							adjustmentAmount = int(adjustmentAmount[1:]) # make sure we're dealing with integers
-							
-							for glyphName in glyphs:
-								glyph = font[glyphName]
-								glyph.prepareUndo("Metric Adjustment")
-								if self.w.marginSelectionGroup.get() == 0: # adjust both margins
-									glyph.leftMargin = adjustmentAmount
-									glyph.rightMargin = adjustmentAmount
-									print("Adjusted left and right margins to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-								elif self.w.marginSelectionGroup.get() == 1:
-									glyph.leftMargin = adjustmentAmount
-									print("Adjusted left margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-								elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
-									glyph.rightMargin = adjustmentAmount
-									print("Adjusted right margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-								glyph.performUndo()
+							adjustmentAmount = int(adjustmentAmount[1:]) # stuff after =, make sure we're dealing with integers
+							adjustmentMode = "set"
+							self.adjustMargin(font,glyphs,adjustmentAmount,adjustmentMode)
 								
 						else: # not a digit found after "-"
 							self.showMessage("Error","cannot deal with things like =-A")
@@ -138,23 +170,10 @@ class AdjustMargins(BaseWindowController):
 					
 					if (adjustmentAmount[1:].isdigit()): # if after the "=" a number is supplied
 						# set to a specific number
-						adjustmentAmount = int(adjustmentAmount[1:]) # make sure we're dealing with integers
-						
-						for glyphName in glyphs:
-							glyph = font[glyphName]
-							glyph.prepareUndo("Metric Adjustment")
-							if self.w.marginSelectionGroup.get() == 0: # adjust both margins
-								glyph.leftMargin = adjustmentAmount
-								glyph.rightMargin = adjustmentAmount
-								print("Adjusted left and right margins to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-							elif self.w.marginSelectionGroup.get() == 1:
-								glyph.leftMargin = adjustmentAmount
-								print("Adjusted left margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-							elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
-								glyph.rightMargin = adjustmentAmount
-								print("Adjusted right margin to " + str(adjustmentAmount) + " for glyph: " + glyphName)
-							glyph.performUndo()
-							
+						adjustmentAmount = int(adjustmentAmount[1:]) # stuff after =, make sure we're dealing with integers
+						adjustmentMode = "set"
+						self.adjustMargin(font,glyphs,adjustmentAmount,adjustmentMode)
+													
 						return # bail
 					
 					else: # if after the "=" a character is supplied
@@ -169,7 +188,7 @@ class AdjustMargins(BaseWindowController):
 						else:
 							self.showMessage("Glyph Not Found.","Glyph \"" + characterName + "\" does not exist in this font.")
 				
-				
+						
 						# preform adjustments using the supplied character's metrics
 						for glyphName in glyphs:
 							glyph = font[glyphName]
@@ -191,21 +210,8 @@ class AdjustMargins(BaseWindowController):
 				
 				else: # for all other adjustments (+ or -)
 					adjustmentAmount = int(adjustmentAmount) # make sure we're dealing with integers
-				
-					for glyphName in glyphs:
-						glyph = font[glyphName]
-						glyph.prepareUndo("Metric Adjustment")
-						if self.w.marginSelectionGroup.get() == 0: # adjust both margins
-							glyph.leftMargin = glyph.leftMargin + adjustmentAmount
-							glyph.rightMargin = glyph.rightMargin + adjustmentAmount
-							print("Adjusted left and right margins " + str(adjustmentAmount) + " for glyph: " + glyphName)
-						elif self.w.marginSelectionGroup.get() == 1:
-							glyph.leftMargin = glyph.leftMargin + int(adjustmentAmount)
-							print("Adjusted left margin " + str(adjustmentAmount) + " for glyph: " + glyphName)
-						elif self.w.marginSelectionGroup.get() == 2: # adjust right margin only
-							glyph.rightMargin = glyph.rightMargin + adjustmentAmount
-							print("Adjusted right margin " + str(adjustmentAmount) + " for glyph: " + glyphName)
-						glyph.performUndo()
+					adjustmentMode = "add"
+					self.adjustMargin(font,glyphs,adjustmentAmount,adjustmentMode)
 					
 					return # bail
 				
