@@ -1,7 +1,7 @@
 # AdjustMargins
 AdjustMargins is a RoboFont extension created in 2015 by [Alex Jacque](http://alexjacque.com).
 
-![AdjustMargins Interface](https://dl.dropboxusercontent.com/u/32129742/dont-delete/github/AdjustMargins/AdjustMargins_interface.png)
+![AdjustMargins Interface](http://alexjacque.com/images/github/AdjustMargins/AdjustMargins_interface.png)
 
 
 ## What does it do?
